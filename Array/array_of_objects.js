@@ -7,14 +7,15 @@ let students = [
     {name: "Jee Dee", age: 30, grade: 3.2}
 ]
 
+//A function that takes an array and a grade and returns a new array based on the grade searched
 function filterByGrade(array, grade) {
     let newArray = []
     for(let i = 0; i < array.length; i++){
        if (array[i].grade === grade){
-        newArray.push(array[i])
+        newArray.unshift(array[i])
         }
     }
     return newArray;
 }
 
-console.log(filterByGrade(students, 3.8))
+console.log(filterByGrade(students, 3.2))
