@@ -87,7 +87,7 @@ class DigitalLibrary extends Library {
 downloadBook(isbn) {
     const book = this.books.find((b) => b.isbn === isbn);  // Find the book by ISBN
     if (book) {
-        this.downloadedBooks.push(book);
+        this.downloadedBooks.push(books);
         console.log(`Downloaded book ${book.title} by ${book.author} on ${new Date().toLocaleString()}`);
     } else {
         console.log("No book was downloaded.");
@@ -116,8 +116,8 @@ book.returnBook()
 const books = ['The Angels are Good', 'John Smith', 101012, true];
 
 // Create a library
-const library = new Library();  // Library constructor should not take arguments
-library.addBook(new Book(...books));  // Add the book to the library
+const library = new Library();
+library.addBook(new Book(...books));
 
 // Remove book by ISBN
 library.removeBook(101012);
@@ -126,13 +126,12 @@ library.removeBook(101012);
 library.findBookByTitle('The Angels are Good');
 
 // Create a digital library
-const digitalLibrary = new DigitalLibrary();  // DigitalLibrary also should not take arguments
-
+const digitalLibrary = new DigitalLibrary();
 // Add the same book to the digital library
-digitalLibrary.addBook(new Book(...books));  // You must first add the book
+digitalLibrary.addBook(new Book(...books));
 
 // Download the book
-digitalLibrary.downloadBook(101012);  // This will now work
+digitalLibrary.downloadBook(101012);
 
 // Try downloading a non-existent book (should not work)
 digitalLibrary.downloadBook(99999);

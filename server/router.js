@@ -4,14 +4,6 @@ const router = express.Router()
 const users = []
 
 router.get('/', (req, res) => {
-    const user = [
-        {
-            name: "John Doe",
-            age: 30,
-            gender: "Male"
-        }
-    ]
-    users.push(user)
     res.status(200).json(users)
 })
 

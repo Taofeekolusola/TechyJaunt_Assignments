@@ -1,0 +1,10 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "taodb",
+    "host": "host.docker.internal",
+    "port":  5432,
+    "dialect": "postgres"
+  }
+}
