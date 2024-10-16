@@ -12,15 +12,10 @@ const Notification = sequelize.define('Notification', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    userId: {
-        type: DataTypes.UUID,
-        references: {
-            model: 'User',
-            key: 'id'
-        },
-    }
 }, {
     timestamps: true
 })
+
+Notification.belongsTo(User)
 
 module.exports = Notification

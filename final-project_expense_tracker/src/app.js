@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 const sharedRouter = require('../routes/sharedRoute')
 const userRoute = require('../routes/userRoute')
 const categoryRoute = require('../routes/categoryRoute')
+const expenseRoute = require('../routes/expenseRoute')
 const app = express()
 
 // Loads .env file
@@ -22,5 +23,6 @@ app.use(express.json())
 app.use('/shared', sharedRouter)
 app.use('/user', userRoute)
 app.use('/category', categoryRoute)
+app.use('/expense', expenseRoute)
 
 module.exports = app

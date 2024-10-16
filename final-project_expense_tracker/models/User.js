@@ -37,7 +37,11 @@ const User = sequelize.define('User', {
 
 // Associations
 User.associate = (models) => {
-    User.hasMany(models.Expense)
+    User.hasMany(models.Expense
+    )
+    User.associate = (models) => {
+        User.hasMany(models.Notification
+        )
 }
 
 module.exports = User
