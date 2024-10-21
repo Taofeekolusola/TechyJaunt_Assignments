@@ -1,8 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const {createExpenseHandler, updateExpenseHandler, deleteExpenseHandler, getExpenseHandler, getExpensesHandler} = require('../controllers/expenseController')
+const {createExpenseHandler, getExpenseSummaryHandler, updateExpenseHandler, deleteExpenseHandler, getExpenseHandler, getExpensesHandler} = require('../controllers/expenseController')
 const {validateToken} = require('../middlewares/auth')
 
+router.get('/summary', validateToken, getExpenseSummaryHandler)
 router.post('/', validateToken, createExpenseHandler)
 router.get('/', validateToken, getExpensesHandler)
 router.get('/:id', validateToken, getExpenseHandler)

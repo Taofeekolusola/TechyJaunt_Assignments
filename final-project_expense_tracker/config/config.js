@@ -9,7 +9,8 @@ config = {
     port: process.env.DB_PORT,
     dialect: 'postgres'
   },
-  jwtSecret: process.env.JWT_SECRET_KEY
+  jwtSecret: process.env.JWT_SECRET_KEY,
+  expenseBudget: process.env.EXPENSE_BUDGET
 }
 
 module.exports = config;

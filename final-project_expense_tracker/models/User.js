@@ -42,6 +42,7 @@ User.associate = (models) => {
     User.associate = (models) => {
         User.hasMany(models.Notification
         )
+    }
 }
 
 module.exports = User
