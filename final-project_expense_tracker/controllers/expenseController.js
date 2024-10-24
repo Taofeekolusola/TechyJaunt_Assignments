@@ -2,6 +2,7 @@ const Expense = require('../models/Expense')
 const Category = require('../models/Category')
 const User = require('../models/User')
 const { Op } = require('sequelize');
+const {checkMonthlyBudgetHandler} = require('../utils/shared')
 
 // @desc create a new expense
 // @route POST /expense
@@ -39,8 +40,17 @@ const createExpenseHandler = async (req, res) => {
             });
         }
 
-        // Create a new expense and associate it with the user
-        const expense = await Expense.create({
+        const hasExceededBudget = await checkMonthlyBudgetHandler(user.id)
+        if (hasExceededBudget.message) {
+            return res.status(403).json({
+                message: hasExceededBudget.message
+            });
+        }
+        else if (hasExceededBudget) {
+            return res.status(403).json({
+                message: 'You have exceeded your budget'
+            });
+        } else {const expense = await Expense.create({
             amount,
             narration,
         });
@@ -50,6 +60,7 @@ const createExpenseHandler = async (req, res) => {
         expense.setCategory(category);
 
         res.status(201).json(expense);
+    }
 
     } catch (error) {
         // Send 500 status for server errors
@@ -152,7 +163,6 @@ const getExpensesHandler = async (req, res) => {
                     message: 'Invalid datatype, filter must be a string'
                 });
             }
-
             const category = await Category.findOne({ where: 
                 {
                     name: filter
@@ -169,6 +179,7 @@ const getExpensesHandler = async (req, res) => {
                     UserId: user.id,
                     CategoryId: category.id
                 },
+                order: [['createdAt', 'DESC']],
                 include: [{ model: Category }]
             })
             return res.status(200).json(expenses);
@@ -177,6 +188,7 @@ const getExpensesHandler = async (req, res) => {
                 where: {
                     UserId: user.id
                 },
+                order: [['createdAt', 'DESC']],
                 include: [{ model: Category }]
             });
             return res.status(200).json(expenses);
@@ -387,5 +399,5 @@ module.exports = {
     getExpenseHandler,
     updateExpenseHandler,
     deleteExpenseHandler,
-    getExpenseSummaryHandler
+    getExpenseSummaryHandler,
 }

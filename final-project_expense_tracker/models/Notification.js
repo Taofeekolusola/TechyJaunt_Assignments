@@ -8,7 +8,7 @@ const Notification = sequelize.define('Notification', {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
-    mesage: {
+    message: {
         type: DataTypes.STRING,
         allowNull: false
     },

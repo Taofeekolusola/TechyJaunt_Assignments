@@ -5,6 +5,7 @@ const sharedRouter = require('../routes/sharedRoute')
 const userRoute = require('../routes/userRoute')
 const categoryRoute = require('../routes/categoryRoute')
 const expenseRoute = require('../routes/expenseRoute')
+const notificationRoute = require('../routes/notificationRoute')
 const app = express()
 
 // Loads .env file
@@ -24,5 +25,6 @@ app.use('/shared', sharedRouter)
 app.use('/user', userRoute)
 app.use('/category', categoryRoute)
 app.use('/expense', expenseRoute)
+app.use('/notification', notificationRoute)
 
 module.exports = app
