@@ -1,3 +1,6 @@
+const {createObjectCsvWriter} = require('csv-writer')
+const path = require('path')
+const fs = require('fs')
 const Expense = require('../models/Expense')
 const Category = require('../models/Category')
 const User = require('../models/User')
@@ -393,6 +396,59 @@ const getExpenseSummaryHandler = async (req, res) => {
         });
     }
 }
+
+//@desc download expense statement
+//route GET /expense/statement/download
+//@access private
+const downloadExpenseStatementHandler = async (req, res) => {
+    try {
+        const expenses = await Expense.findAll({
+            where: {
+                UserId: req.user.id
+            }
+        });
+
+        const filepath = path.join(__dirname, 'expenses.csv')
+        const csvWriter = createObjectCsvWriter({
+            path: filepath,
+            header: [
+                { id: 'id', title: 'ID' },
+                { id: 'amount', title: 'Amount' },
+                { id: 'narration', title: 'Narration' },
+                { id: 'createdAt', title: 'Created At' }
+                //{id: 'categoryId', title: 'Category ID'},
+                //{id: 'updatedAt', title: 'Updated At'}
+            ]
+        });
+        const expensesData = expenses.map(expense => {
+            return {
+                id: expense.id,
+                amount: expense.amount,
+                narration: expense.narration,
+                createdAt: expense.createdAt.toISOString().split('T')[0]
+            }
+        });
+
+        await csvWriter.writeRecords(expensesData);
+        res.download(filepath, 'expenses.csv', (error) => {
+            if (error) {
+                return res.status(500).json({
+                    message: error.message
+                        
+                })
+            }
+            fs.unlinkSync(filepath);
+        })
+    } catch (error) {
+        // Send 500 status for server errors
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+}
+                            
+
+
 module.exports = {
     createExpenseHandler,
     getExpensesHandler,
@@ -400,4 +456,5 @@ module.exports = {
     updateExpenseHandler,
     deleteExpenseHandler,
     getExpenseSummaryHandler,
+    downloadExpenseStatementHandler
 }
