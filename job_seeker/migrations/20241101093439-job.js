@@ -7,6 +7,7 @@ module.exports = {
       title: {
         type: Sequelize.STRING,
         allowNull: false,
+        primaryKey: true,
         validate: {
           len: [2, 50]
         }

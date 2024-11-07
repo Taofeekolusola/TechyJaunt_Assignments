@@ -1,7 +1,13 @@
-const { DataTypes } = require('sequelize')
-const sequelize = require('../db')
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db');
+const User = require('./User'); // Import User model if necessary
 
 const Job = sequelize.define('job', {
+    id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+    },
     title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -9,8 +15,8 @@ const Job = sequelize.define('job', {
             len: [2, 50]
         }
     },
-    jobType: {
-        type: DataTypes.ENUM('full-time', 'part-time', 'remote'),
+    jobTypes: {
+        type: DataTypes.TEXT,
         allowNull: false
     },
     location: {
@@ -28,9 +34,22 @@ const Job = sequelize.define('job', {
     company: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        }
     }
 }, {
     timestamps: true
-})
+});
 
-module.exports = Job
+// Define the association here
+Job.associate = (models) => {
+    Job.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+};
+
+module.exports = Job;

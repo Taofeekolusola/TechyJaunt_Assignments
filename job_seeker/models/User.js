@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize')
-const sequelize = require('../db')
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db');
 
 const User = sequelize.define('user', {
     id: {
@@ -47,6 +47,11 @@ const User = sequelize.define('user', {
     }
 }, {
     timestamps: true
-})
+});
 
-module.exports = User
+// Define the association here
+User.associate = (models) => {
+    User.hasMany(models.Job, { foreignKey: 'userId', as: 'jobs' });
+};
+
+module.exports = User;

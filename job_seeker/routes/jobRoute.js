@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const { searchJobs } = require('../controllers/jobController')
+const { searchJobs, deleteJobs, createJobs } = require('../controllers/jobController')
+const {validateToken} = require('../middleware/authentication')
 
-router.get('/', searchJobs)
+router.get('/', validateToken, searchJobs);
+router.post('/', createJobs);
+router.delete('/:id', validateToken, deleteJobs);
 
 module.exports = router

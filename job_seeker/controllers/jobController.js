@@ -1,59 +1,96 @@
 const { Op } = require('sequelize');
 const Job = require('../models/Job');
 
+
+const createJobs = async (req, res) => {
+    try {
+        const { title, location, salary, experience, jobTypes, company, userId } = req.body;
+
+        const newJob = await Job.create({
+            title,
+            location,
+            salary,
+            experience,
+            jobTypes,
+            company,
+            userId
+        });
+
+        res.status(201).json(newJob);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error while creating job' });
+    }
+}
+
 //@desc search jobs
 //@route GET /jobs
 //@access public 
 
 const searchJobs = async (req, res) => {
     try {
-        const { title, location, salary, experience, jobType, company } = req.query;
-            
-        // Build query conditions based on the filters
-        const queryConditions = {};
+        const user = req.user;
+        const { title, location, salary, jobType, company, experience } = req.query;
 
+        const conditions = {
+            userId: user.id
+        };
+
+        // Dynamically add conditions for each filter if provided
         if (title) {
-            queryConditions.title = {
-                [Op.iLike]: `%${title}%`
-            };
+            conditions.title = { [Op.like]: `%${title}%` };
         }
         if (location) {
-            queryConditions.location = {
-                [Op.iLike]: `%${location}%`
-            };
-        }
-        if (experience) {
-            queryConditions.experience = {
-                ...queryConditions.experience, [Op.gte]: parseInt(experience)
-            };
+            conditions.location = { [Op.like]: `%${location}%` };
         }
         if (salary) {
-            queryConditions.salary = {
-                ...queryConditions.salary, [Op.lte]: parseInt(salary)
-            };
+            conditions.salary = salary;
         }
         if (jobType) {
-            queryConditions.jobType = jobType;
+            conditions.jobType = { [Op.like]: `%${jobType}%` };
         }
         if (company) {
-            queryConditions.company = {
-                [Op.iLike]: `%${company}%`
-            };
+            conditions.company = { [Op.like]: `%${company}%` };
+        }
+        if (experience) {
+            conditions.experience = experience;
         }
 
-        // Fetch jobs based on the query conditions
         const jobs = await Job.findAll({
-            where: queryConditions
+            where: conditions
         });
-
-        res.json(jobs);
+        res.status(200).json(jobs);
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
+            message: error.message
+        });
+    }
+}
+
+//@desc delete jobs
+//@route DELETE /jobs/:id
+//@access public 
+
+const deleteJobs = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const job = await Job.findByPk(id);
+
+        if (!job) {
+            return res.status(404).json({ message: 'Job not found' });
+        }
+
+        await job.destroy();
+        res.status(204).send();
+    } catch (error) {
+        return res.status(500).json({
             message: error.message
         });
     }
 }
 
 module.exports = {
-    searchJobs
+    searchJobs,
+    createJobs,
+    deleteJobs
 };
